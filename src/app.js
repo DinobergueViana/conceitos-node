@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const { v4: uuid, validate: isUuid } = require('uuid');
+const { v4: uuid, validate: isUuid, validate } = require('uuid');
 
 const app = express();
 
@@ -35,12 +35,66 @@ app.post("/repositories", (request, response) => {
 
 });
 
+// permite atualizar um repositorio
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+  const { url, title, techs } = request.body;
+
+  // verifica se o id vindo na requisição está no formato uuid
+  if( !validate(id) ) {
+    return response.status(401).json({ error: "Invalid ID"});
+  }
+
+  // recupera o index do repositorio que se deseja atualizar
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  // verifica se o valor da variavel repositoryIndex é negativo
+  // se for, significa que o repositorio não existe
+  if(repositoryIndex < 0) {
+    return response.status(400).json({error: "Repository not found"});
+  }
+
+  // recupera o numero de likes do repositorio antes de atualizar as informações
+  const likes = repositories[repositoryIndex].likes;
+
+  // atualizando o repositorio encontrado
+  const repository = {
+    id,
+    url,
+    title,
+    techs,
+    likes 
+  }
+
+  // insere o repositorio atualizado no array
+  repositories[repositoryIndex] = repository;
+
+  return response.status(201).json(repository);
 });
 
+// permite deletar um repositorio
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  // verifica se o id vindo na requisição está no formato uuid
+  if( !validate(id) ) {
+    return response.status(401).json({ error: "Invalid ID"});
+  }
+
+  // recupera o index do repositorio que se deseja atualizar
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  // verifica se o valor da variavel repositoryIndex é negativo
+  // se for, significa que o repositorio não existe
+  if(repositoryIndex < 0) {
+    return response.status(400).json({error: "Repository not found"});
+  }
+
+  // deletando o repositorio encontrado
+  repositories.splice(repositoryIndex, 1);
+
+  return response.status(204).send();
+
 });
 
 app.post("/repositories/:id/like", (request, response) => {
