@@ -42,7 +42,7 @@ app.put("/repositories/:id", (request, response) => {
 
   // verifica se o id vindo na requisição está no formato uuid
   if( !validate(id) ) {
-    return response.status(401).json({ error: "Invalid ID"});
+    return response.status(400).json({ error: "Invalid ID"});
   }
 
   // recupera o index do repositorio que se deseja atualizar
@@ -98,7 +98,29 @@ app.delete("/repositories/:id", (request, response) => {
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  // verifica se o id vindo na requisição está no formato uuid
+  if( !validate(id) ) {
+    return response.status(400).json({ error: "Invalid ID"});
+  }
+
+  // recupera o index do repositorio que se deseja atualizar
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  // verifica se o valor da variavel repositoryIndex é negativo
+  // se for, significa que o repositorio não existe
+  if(repositoryIndex < 0) {
+    return response.status(400).json({error: "Repository not found"});
+  }
+
+  let repository = repositories[repositoryIndex];
+
+  // atualiza o repositorio encontrado e soma mais um ao numero de likes
+  repositories.push(repository.likes += 1);
+
+  return response.status(201).send();
+  
 });
 
 module.exports = app;
