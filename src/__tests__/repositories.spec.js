@@ -99,25 +99,25 @@ describe("Repositories", () => {
     });
   });
 
-  // it("should be able to delete the repository", async () => {
-  //   const response = await request(app)
-  //     .post("/repositories")
-  //     .send({
-  //       url: "https://github.com/Rocketseat/umbriel",
-  //       title: "Umbriel",
-  //       techs: ["Node", "Express", "TypeScript"]
-  //     });
+  it("should be able to delete the repository", async () => {
+    const response = await request(app)
+      .post("/repositories")
+      .send({
+        url: "https://github.com/Rocketseat/umbriel",
+        title: "Umbriel",
+        techs: ["Node", "Express", "TypeScript"]
+      });
 
-  //   await request(app).delete(`/repositories/${response.body.id}`).expect(204);
+    await request(app).delete(`/repositories/${response.body.id}`).expect(204);
 
-  //   const repositories = await request(app).get("/repositories");
+    const repositories = await request(app).get("/repositories");
 
-  //   const repository = repositories.body.find((r) => r.id === response.body.id);
+    const repository = repositories.body.find((r) => r.id === response.body.id);
 
-  //   expect(repository).toBe(undefined);
-  // });
+    expect(repository).toBe(undefined);
+  });
 
-  // it("should not be able to delete a repository that does not exist", async () => {
-  //   await request(app).delete(`/repositories/123`).expect(400);
-  // });
+  it("should not be able to delete a repository that does not exist", async () => {
+    await request(app).delete(`/repositories/123`).expect(400);
+  });
 });

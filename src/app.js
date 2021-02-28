@@ -78,7 +78,7 @@ app.delete("/repositories/:id", (request, response) => {
 
   // verifica se o id vindo na requisição está no formato uuid
   if( !validate(id) ) {
-    return response.status(401).json({ error: "Invalid ID"});
+    return response.status(400).json({ error: "Invalid ID"});
   }
 
   // recupera o index do repositorio que se deseja atualizar
@@ -119,7 +119,7 @@ app.post("/repositories/:id/like", (request, response) => {
   // atualiza o repositorio encontrado e soma mais um ao numero de likes
   repositories.push(repository.likes += 1);
 
-  return response.status(201).send();
+  return response.status(201).json(repository);
   
 });
 
